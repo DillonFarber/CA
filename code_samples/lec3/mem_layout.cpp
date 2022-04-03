@@ -44,9 +44,9 @@ void bar(int x) {
 void foo(int p) {
   int i;
   cout << left << setw(WIDTH_COL_ONE) << "7. Local variable i in foo(): "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &i << endl;
   cout << left << setw(WIDTH_COL_ONE) << "8. Paramemter p in foo(): "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &p << endl;
 
   for (i = 1; i <= N; i++) 
     x[i] = p * x[i - 1] + 3;
@@ -66,26 +66,26 @@ int main() {
   y[17] = 17;
 
   cout << left << setw(WIDTH_COL_ONE) << "1. Global array x: "
-       << setw(WIDTH_COL_TWO) << right << (unsigned long) &x << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &x << endl;
   cout << left << setw(WIDTH_COL_ONE) << "2. Second element in global array x: "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN  << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &x[1]  << endl;
     
   cout << left << setw(WIDTH_COL_ONE) << "3. Local variable i in main(): "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &i << endl;
   cout << left << setw(WIDTH_COL_ONE) << "4. Local variable y in main(): "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &y << endl;
 
   cout << left << setw(WIDTH_COL_ONE) << "5. Start address of dynamic array y: "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &(*y) << endl;
   cout << left << setw(WIDTH_COL_ONE) << "6. Second element of dynamic array y: "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &y[1] << endl;
   
   foo(y[17]);
 
   cout << left << setw(WIDTH_COL_ONE) << "9. Address of bar(): "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &bar << endl;
   cout << left << setw(WIDTH_COL_ONE) << "10. Address of cout: "
-       << setw(WIDTH_COL_TWO) << right << FILL_THIS_IN << endl;
+       << setw(WIDTH_COL_TWO) << right << (long long) &cout << endl;
 
   return 0;
 }
