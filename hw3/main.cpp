@@ -10,6 +10,7 @@ const unsigned short MAX = 10000;
 
 int main(int argc, char const *argv[])
 {
+    // error checking for the number of args in the input at compile time
     if(argc < 4){
         std::cout << "./.exe  .. args- ERROR not enough arguments inputed" << std::endl;
         return 1;
@@ -20,29 +21,35 @@ int main(int argc, char const *argv[])
     std::ofstream output;
     std::string file = "cache_sim_output.txt";
     char deliminator = ' ';
-    std::string strAddr, charDigit = "";
+    std::string strAddr = "";
+    std::string str;
+    std::string charDigit = "";
     int addrs[MAX];
     int indx = 0;
     int hit_miss[MAX];
 
+    // opening and checking if it has opened the file. 
     input.open(argv[3]);
     if(!input.is_open()){
         std::cout << "The file did not open, exiting program!" << std::endl;
         return -1;
     }
 
-    std::cout << "argv[2] " << atoi(argv[2]) << " argv[1] " << atoi(argv[1]) \
-    << " The file: " << argv[3] << std::endl;
-
+    // creating my cache with the specified arguements 
     myCache = Cache(atoi(argv[2]), atoi(argv[1]));
-    int i = 0;
+
+    // getting the information from the input file. 
     while(!input.eof())
     {
-        getline(input, strAddr);
+        getline(input, str);
+        strAddr += str + " ";
+
     }
     input.close();
+
     std::cout << strAddr << std::endl;
     
+    // the string of addresses and breaking them down into integers and adding to array
     for(int i = 0; i < strAddr.length(); i++)
     {
         if(strAddr[i] != deliminator)
@@ -50,6 +57,7 @@ int main(int argc, char const *argv[])
             charDigit += strAddr[i];
         }
         else{
+            std::cout << charDigit << std::endl;
             addrs[indx] = stoi(charDigit);
             charDigit = "";
             indx++;
@@ -61,12 +69,17 @@ int main(int argc, char const *argv[])
         hit_miss[i] = myCache.running(addrs[i]);
     }
 
+
+    // opening the file for output.
     output.open(file);
+    // error checking
     if(!output.is_open())
     {
         std::cout << "error didn't open output file!!" << std::endl;
         return -2;
     }
+
+    // checking for hit or miss in the cache. then formating and putting them in the output file
     for (int i = 0; i < indx; i++)
     {
         switch (hit_miss[i])

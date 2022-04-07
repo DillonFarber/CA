@@ -1,12 +1,16 @@
 /*
     Class: Cache
-    Parameter(s): int assoc, entries, words;
+    Parameter(s):   int assoc
+                    int entries
+                    int words
+                    Entry **cacheBlock
     Method(s): 
         private: void enter()
         private: bool check()
         private: void createCacheBlocks()
         private: void createEntriesPerBlock()
         public: int running()
+        void setValidFalse()
     Class Function:
         The purpose of this class is to simulate the cache of a cpu
         in the fashion of taking in a generic integer value, the 
@@ -22,8 +26,10 @@
 class Cache
 {
 private:
+
     Entry **cacheBlock;
     int assoc, entries, words;
+
     void enter(int addr);
     bool check(int addr);
     void createCacheBlocks(int assoc, int entries);
@@ -80,6 +86,15 @@ void Cache::createCacheBlocks(int assoc, int entries)
         this->cacheBlock[i] = new Entry[entries/assoc];
 }
 
+/* 
+    Method: check()
+    Parameter(s): int addr
+    Function: The check takes the address and finds the tag and its
+    index, then searches the number of ways there are for that index.
+    Return: boolean
+            true if found
+            false if not found
+ */
 
 bool Cache::check(int addr)
 {
@@ -106,8 +121,9 @@ bool Cache::check(int addr)
     Parameter: addr - address in integer form
     Function: enter() method uses the addr parameter to break down
     into a tag and index. Then it checks each way if has an opening 
-    to input into the cach. If error occurs it enjects the address
-    into the first way and indicated index.
+    to input into the cach. when the method finds a place to put the 
+    address, it calls the setValidFalse() and then adds the new entry
+    to the cache.
 */
 void Cache::enter(int addr)
 {
@@ -123,21 +139,20 @@ void Cache::enter(int addr)
         {   
             setValidFalse();
             enteredSet = set;
-            std::cout << "Set on entry: " << set << std::endl;
             entered = true;
             this->cacheBlock[set][ind].setTag(tag);
             break;
         }
     }
-    
-    for(int i = 0; i < this->assoc; i++){
-        for (int j = 0; j < (this->entries/this->assoc); j++)
-        {
-            std::cout << std::boolalpha <<  this->cacheBlock[i][j].checkValid() << std::noboolalpha << std::endl;
-        }
-    }
 }
 
+/* 
+    Method: setValidFalse()
+    Parameters: none
+    Function: The function sets all valid bits to false. This function
+    is to be called only as a private member of this class.
+    Return: N/A
+ */
 
 void Cache::setValidFalse()
 {
@@ -175,9 +190,12 @@ int Cache::running(int addr)
     }
 
     return -1;
-
+    
 }
-/* Destructor */
+/* Destructor 
+    Function: Deletes the allocated space of the dynamically 
+    allocated array, then decunstructs the object. 
+*/
 Cache::~Cache()
 {
     for(int i = 0; i < this->assoc; i++)
