@@ -27,6 +27,7 @@ private:
     void enter(int addr);
     bool check(int addr);
     void createCacheBlocks(int assoc, int entries);
+    void setValidFalse();
     
 public:
     Cache();
@@ -76,7 +77,7 @@ void Cache::createCacheBlocks(int assoc, int entries)
 {
     this->cacheBlock = new Entry*[assoc];
     for(int i = 0; i < assoc; i++)
-        this->cacheBlock[i] = new Entry[entries];
+        this->cacheBlock[i] = new Entry[entries/assoc];
 }
 
 
@@ -84,12 +85,18 @@ bool Cache::check(int addr)
 {
     int tag = addr / (this->entries/this->assoc);
     int ind = addr % (this->entries/this->assoc);
+    int fset;
     bool found = false;
 
     for(int set = 0; set < this->assoc; set++)
     {
         found = this->cacheBlock[set][ind].checkEntry(tag);
-        this->cacheBlock[set][ind].oldValid();
+        if(found){
+            setValidFalse();
+            this->cacheBlock[set][ind].validTrue();
+            fset = set;
+            break;
+        }
     }
     return found;
     
@@ -106,26 +113,41 @@ void Cache::enter(int addr)
 {
     int tag = addr / (this->entries/this->assoc);
     int ind = addr % (this->entries/this->assoc);
+    int enteredSet;
     bool isValid = true;
     bool entered = false;
     for(int set = 0; set < this->assoc; set++)
     {
-
         isValid = this->cacheBlock[set][ind].checkValid();
         if(!isValid)
         {   
-            for(int nSet = 0; nSet < this->assoc; nSet++)
-                this->cacheBlock[nSet][ind].oldValid();
+            setValidFalse();
+            enteredSet = set;
+            std::cout << "Set on entry: " << set << std::endl;
             entered = true;
-            this->cacheBlock[set][ind] = Entry(tag, true);
+            this->cacheBlock[set][ind].setTag(tag);
+            break;
         }
     }
-    if(!entered)
+    
+    for(int i = 0; i < this->assoc; i++){
+        for (int j = 0; j < (this->entries/this->assoc); j++)
         {
-            for(int nSet = 0; nSet < this->assoc; nSet++)
-                this->cacheBlock[nSet][ind].oldValid();
-            this->cacheBlock[0][ind] = Entry(tag, true);
+            std::cout << std::boolalpha <<  this->cacheBlock[i][j].checkValid() << std::noboolalpha << std::endl;
         }
+    }
+}
+
+
+void Cache::setValidFalse()
+{
+    for(int i = 0; i < this->assoc; i++){
+        for (int j = 0; j < this->assoc; j++)
+        {
+            this->cacheBlock[i][j].oldValid();
+        }
+        
+    }
 }
 /*
     Method: running()
@@ -158,5 +180,7 @@ int Cache::running(int addr)
 /* Destructor */
 Cache::~Cache()
 {
-    delete cacheBlock;
+    for(int i = 0; i < this->assoc; i++)
+        delete [] this->cacheBlock[i];
+    delete [] this->cacheBlock;
 }

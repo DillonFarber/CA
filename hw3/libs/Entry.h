@@ -12,6 +12,7 @@
  */
 
 #pragma once
+#include <cmath>
 #include "WordBlocks.h"
 
 class Entry
@@ -22,33 +23,40 @@ private:
 
 public:
     Entry();
-    Entry(int tag, bool valid);
     bool checkEntry(int tag);
     bool checkValid();
     void oldValid();
+    void setTag(int tag);
+    void validTrue();
     ~Entry();
 };
 
 Entry::Entry(){}
 
-Entry::Entry(int tag, bool valid)
-{
-    this->tag = tag;
-    this->valid = valid;
-}
-
 bool Entry::checkEntry(int tag){
-    if(tag == this->tag)
+    if(this->tag == tag)
         return true;
     else
         return false;
 }
 bool Entry::checkValid(){
     return this->valid;
+    
 }
 
 void Entry::oldValid(){
     this->valid = false;
+}
+
+void Entry::setTag(int tag)
+{
+    this->tag = tag;
+    this->valid = true;
+}
+
+void Entry::validTrue()
+{
+    this->valid = true;
 }
 
 Entry::~Entry()
