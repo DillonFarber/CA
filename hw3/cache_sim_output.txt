@@ -4,15 +4,3 @@ MISS: 5 | misstype:
 MISS: 1 | misstype: 
 MISS: 3 | misstype: 
 HIT:  1 | 
-HIT:  3 | 
-MISS: 5 | misstype: 
-MISS: 7 | misstype: 
-MISS: 8 | misstype: 
-HIT:  5 | 
-MISS: 3 | misstype: 
-HIT:  3 | 
-MISS: 4 | misstype: 
-HIT:  5 | 
-MISS: 6 | misstype: 
-MISS: 7 | misstype: 
-MISS: 8 | misstype: 

@@ -10,7 +10,7 @@
         private: void createCacheBlocks()
         private: void createEntriesPerBlock()
         public: int running()
-        void setValidFalse()
+        void incrementCounter()
     Class Function:
         The purpose of this class is to simulate the cache of a cpu
         in the fashion of taking in a generic integer value, the 
@@ -33,7 +33,7 @@ private:
     void enter(int addr);
     bool check(int addr);
     void createCacheBlocks(int assoc, int entries);
-    void setValidFalse();
+    void incrementCounter();
     
 public:
     Cache();
@@ -102,13 +102,14 @@ bool Cache::check(int addr)
     int ind = addr % (this->entries/this->assoc);
     int fset;
     bool found = false;
-
+    
     for(int set = 0; set < this->assoc; set++)
     {
         found = this->cacheBlock[set][ind].checkEntry(tag);
-        if(found){
-            setValidFalse();
-            this->cacheBlock[set][ind].validTrue();
+        if(found)
+        {
+            incrementCounter();
+            this->cacheBlock[set][ind].setTag(tag);
             fset = set;
             break;
         }
@@ -122,48 +123,35 @@ bool Cache::check(int addr)
     Function: enter() method uses the addr parameter to break down
     into a tag and index. Then it checks each way if has an opening 
     to input into the cach. when the method finds a place to put the 
-    address, it calls the setValidFalse() and then adds the new entry
-    to the cache.
+    address, it calls the the incrementCounter() to increment each of
+    the cache.
 */
 void Cache::enter(int addr)
 {
     int tag = addr / (this->entries/this->assoc);
     int ind = addr % (this->entries/this->assoc);
-    int enteredSet;
-    bool isValid = true;
-    bool entered = false;
+    int findOld[this->assoc]; 
+    int oldest, oldestby;
     for(int set = 0; set < this->assoc; set++)
+    {       
+        findOld[set] = this->cacheBlock[set][ind].getCounter();
+    }
+    oldest = 0;
+    oldestby = findOld[0];
+    for (int i = 1; i < this->assoc; i++)
     {
-        isValid = this->cacheBlock[set][ind].checkValid();
-        if(!isValid)
-        {   
-            setValidFalse();
-            enteredSet = set;
-            entered = true;
-            this->cacheBlock[set][ind].setTag(tag);
-            break;
-        }
-    }
-}
-
-/* 
-    Method: setValidFalse()
-    Parameters: none
-    Function: The function sets all valid bits to false. This function
-    is to be called only as a private member of this class.
-    Return: N/A
- */
-
-void Cache::setValidFalse()
-{
-    for(int i = 0; i < this->assoc; i++){
-        for (int j = 0; j < this->assoc; j++)
+        if(findOld[i] > oldestby)
         {
-            this->cacheBlock[i][j].oldValid();
+            oldest = i;
+            oldestby = findOld[i];
         }
-        
     }
+    incrementCounter();
+    cacheBlock[oldest][ind].setTag(tag);
+    
+    
 }
+
 /*
     Method: running()
     Parameter: addr - this is the address integer to be broken down
@@ -192,6 +180,27 @@ int Cache::running(int addr)
     return -1;
     
 }
+
+/* 
+    Method: incrementCounter()
+    Parameters: none
+    Function: This increments the counter of each object in the entry
+    class object. 
+    Return: N/A
+ */
+void Cache::incrementCounter()
+{
+    for (int i = 0; i < this->assoc; i++)
+    {
+        for (int j = 0; j < (this->entries/this->assoc); j++)
+        {
+            cacheBlock[i][j].counterUp();
+        }
+        
+    }
+    
+}
+
 /* Destructor 
     Function: Deletes the allocated space of the dynamically 
     allocated array, then decunstructs the object. 

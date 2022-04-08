@@ -1,14 +1,12 @@
 /*
     Class: Entry
     Parameter(s):   int tag
-                    bool valid
+                    int counter;
     Method(s): 
                     Entry()
                     bool checkEntry()
-                    bool checkValid()
-                    bool oldValid()
                     void setTag()
-                    void validTrue();
+
         
     Class Function:
                     This is a class that is a entry for a cache sim. 
@@ -21,21 +19,20 @@
 
 #pragma once
 #include <cmath>
-#include "WordBlocks.h"
+
 
 class Entry
 {
 private:
     int tag = -1;
-    bool valid = false;
+    int counter = 0;
 
 public:
     Entry();
     bool checkEntry(int tag);
-    bool checkValid();
-    void oldValid();
+    void counterUp();
     void setTag(int tag);
-    void validTrue();
+    int getCounter();
     ~Entry();
 };
 
@@ -53,7 +50,9 @@ Entry::Entry(){}
             true if match
             false if not
  */
-bool Entry::checkEntry(int tag){
+bool Entry::checkEntry(int tag)
+{
+    this->counter++;
     if(this->tag == tag)
         return true;
     else
@@ -61,25 +60,27 @@ bool Entry::checkEntry(int tag){
 }
 
 /* 
-    Method: checkvalid()
+    Method: counterUp()
     Parameter(s): none
     Functioin: The method checks the valid parameter and sends
         it back to the caller.
     Return: boolean
  */
-bool Entry::checkValid(){
-    return this->valid;
-    
+void Entry::counterUp()
+{
+    this->counter++;
 }
 
 /* 
-    Method: oldValid()
-    Parameter(s): none 
-    Functioin: this function makes the valid parameter false.
-    Return: none 
+    Method: counterUp()
+    Parameter(s): none
+    Functioin: The method checks the valid parameter and sends
+        it back to the caller.
+    Return: boolean
  */
-void Entry::oldValid(){
-    this->valid = false;
+int Entry::getCounter()
+{
+    return this->counter;
 }
 
 /* 
@@ -92,19 +93,7 @@ void Entry::oldValid(){
 void Entry::setTag(int tag)
 {
     this->tag = tag;
-    this->valid = true;
-}
-
-/* 
-    Method: validTrue()
-    Parameter(s): none 
-    Functioin: This method makes the valid boolean true when it is 
-        checked. 
-    Return: none 
- */
-void Entry::validTrue()
-{
-    this->valid = true;
+    this->counter = 0;
 }
 
 /* 
